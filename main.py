@@ -87,3 +87,9 @@ class CustomAnimation(Scene):
             dst = dots[i + 1]
             line = Line(src.get_center(), dst.get_center(), stroke_width=2, color=WHITE)
             self.play(Create(line))
+
+        self.wait(2)
+
+        group.remove(table)
+        group.arrange(RIGHT, buff=2)
+        self.add(group)
