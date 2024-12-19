@@ -9,6 +9,8 @@ x_1 = [[i, calc(i)] for i in np.arange(0.0, 6.0, 1.0)]
 x_2 = [[i, calc(i)] for i in np.arange(0.0, 5.5, 0.5)]
 x_3 = [[i, calc(i)] for i in np.arange(0.0, 5.1, 0.1)]
 
+dot_size = 0.08
+
 
 class CustomAnimation(Scene):
     def construct(self):
@@ -34,7 +36,7 @@ class CustomAnimation(Scene):
         g0 = VGroup(table, axes).arrange(RIGHT, buff=2)
         self.add(g0)
 
-        h_dot = Dot(point=axes.c2p(0, 0), fill_color=RED)
+        h_dot = Dot(radius=dot_size, point=axes.c2p(0, 0), fill_color=RED)
 
         # -------- 虚线
         h_lines = always_redraw(lambda: axes.get_lines_to_point(h_dot.get_center()))
@@ -67,7 +69,7 @@ class CustomAnimation(Scene):
                 )
                 self.wait()
 
-            _dot = Dot(point=_pos, fill_color=WHITE)
+            _dot = Dot(radius=dot_size, point=_pos, fill_color=WHITE)
             self.add(_dot)
             dots.append(_dot)
 
@@ -111,7 +113,7 @@ class CustomAnimation(Scene):
             dots = []
             for i, p in enumerate(pos):
                 _pos = axes.c2p(p[0], p[1])
-                _dot = Dot(point=_pos, fill_color=WHITE)
+                _dot = Dot(radius=dot_size, point=_pos, fill_color=WHITE)
                 dots.append(_dot)
 
             lines = []
@@ -144,7 +146,7 @@ class CustomAnimation(Scene):
         self.play(FadeOut(*lines))
         self.wait()
 
-        h_dot = Dot(point=axes.c2p(0, 0), fill_color=RED)
+        h_dot = Dot(radius=dot_size, point=axes.c2p(0, 0), fill_color=RED)
         self.play([FadeIn(h_dot, scale=0.5)])
 
         h_lines = always_redraw(lambda: axes.get_lines_to_point(h_dot.get_center()))
@@ -158,7 +160,7 @@ class CustomAnimation(Scene):
                 self.play(h_dot.animate.move_to(_pos))
                 self.wait()
 
-            _dot = Dot(point=_pos, fill_color=WHITE)
+            _dot = Dot(radius=dot_size, point=_pos, fill_color=WHITE)
             self.add(_dot)
             _dots.append(_dot)
 
@@ -203,7 +205,7 @@ class CustomAnimation(Scene):
         self.play(FadeOut(*lines))
         self.wait()
 
-        h_dot = Dot(point=axes.c2p(0, 0), fill_color=RED)
+        h_dot = Dot(radius=dot_size, point=axes.c2p(0, 0), fill_color=RED)
         self.play([FadeIn(h_dot, scale=0.5)])
 
         h_lines = always_redraw(lambda: axes.get_lines_to_point(h_dot.get_center()))
@@ -214,10 +216,9 @@ class CustomAnimation(Scene):
             _pos = axes.c2p(p[0], p[1])
 
             if i != 0:
-                self.play(h_dot.animate.move_to(_pos))
-                self.wait()
+                self.play(h_dot.animate.move_to(_pos), run_time=0.1)
 
-            _dot = Dot(point=_pos, fill_color=WHITE)
+            _dot = Dot(radius=dot_size, point=_pos, fill_color=WHITE)
             self.add(_dot)
             _dots.append(_dot)
 
@@ -234,6 +235,13 @@ class CustomAnimation(Scene):
             _line = Line(
                 src.get_center(), dst.get_center(), stroke_width=2, color=WHITE
             )
-            self.play(Create(_line))
+            self.play(Create(_line), run_time=0.1)
             lines.append(_line)
         # ---------------
+
+        self.play([FadeOut(*lines), FadeOut(*dots)])
+        self.wait()
+
+        curve = axes2.plot(lambda x: calc(x), color=YELLOW)
+        self.play(Create(curve))
+        self.wait()
